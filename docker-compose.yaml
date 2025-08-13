@@ -1,0 +1,61 @@
+services:
+  # rabbitmq:
+  #   image: bitnami/rabbitmq
+  #   container_name: rabbitmq_homa
+  #   ports: 
+  #     - "5672:5672"
+  #     - "15672:15672"
+  #   environment:
+  #     RABBITMQ_USERNAME: durk
+  #     RABBITMQ_PASSWORD: durk
+  #     RABBITMQ_VHOSt: /
+  #     RABBITMQ_MANAGEMENT_ALLOW_WEB_ACCESS: true
+  #   volumes:
+  #     - rabbitmq_data:/bitnami/rabbitmq/mnesia
+  meillisearch:
+    image: getmeili/meilisearch
+    container_name: meillisearch
+    ports:
+      - "7700:7700"
+    environment:
+      MEILI_MASTER_KEY: "SAMPLE_MASTER_KEY"
+    volumes:
+      - meili_data:/meili_data
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.2.15
+    container_name: zookeeper_meilli
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+  kafka: 
+    image: confluentinc/cp-kafka:7.2.15
+    container_name: kafka_meilli
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    depends_on:
+      - zookeeper
+
+  kafka-ui:
+    image: obsidiandynamics/kafdrop
+    container_name: kafdrop_meilli
+    ports: 
+      - "9000:9000"
+    environment:
+        KAFKA_BROKERCONNECT: kafka:29092
+    depends_on:
+      - kafka
+
+volumes:
+  # rabbitmq_data:
+  meili_data:
+    
