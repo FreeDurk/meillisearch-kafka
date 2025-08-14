@@ -12,6 +12,21 @@ services:
   #     RABBITMQ_MANAGEMENT_ALLOW_WEB_ACCESS: true
   #   volumes:
   #     - rabbitmq_data:/bitnami/rabbitmq/mnesia
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: shopee
+      MYSQL_USER: shopee
+      MYSQL_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - app-network
   meillisearch:
     image: getmeili/meilisearch
     container_name: meillisearch
@@ -55,7 +70,12 @@ services:
     depends_on:
       - kafka
 
+networks:
+  app-network:
+    driver: bridge
+
 volumes:
   # rabbitmq_data:
   meili_data:
+  dbdata:
     
