@@ -5,9 +5,19 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './models/products.entity';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { MeiliSearchModule } from 'nestjs-meilisearch';
+import { Movie } from './models/movie.entity';
+import { Torrent } from './models/torrent.entity';
+import { MovieService } from './movie/movie.service';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
+    BullModule.forRoot({
+      redis: {
+        host: 'localhost',
+        port: 6379,
+      },
+    }),
     MeiliSearchModule.forRoot({
       host: 'http://127.0.0.1:7700',
       apiKey: 'SAMPLE_MASTER_KEY',
@@ -30,13 +40,13 @@ import { MeiliSearchModule } from 'nestjs-meilisearch';
       port: 3306,
       username: 'shopee',
       password: 'root',
-      entities: [Product],
+      entities: [Product,Movie,Torrent],
       synchronize: true,
     }),
 
-    TypeOrmModule.forFeature([Product]),
+    TypeOrmModule.forFeature([Product,Movie,Torrent]),
   ],
   controllers: [ApiController],
-  providers: [ApiService],
+  providers: [ApiService, MovieService],
 })
 export class ApiModule {}

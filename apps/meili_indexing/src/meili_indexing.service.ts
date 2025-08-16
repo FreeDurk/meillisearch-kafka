@@ -7,8 +7,8 @@ import { InjectMeiliSearch } from 'nestjs-meilisearch';
 export class MeiliIndexingService {
   constructor(@InjectMeiliSearch() private readonly meiliClient: Meilisearch) {}
 
-  async addProduct(products: CreateProductRequest[]) {
-    await this.meiliClient.index('products').addDocuments(products);
+  async addProduct(products: CreateProductRequest) {
+    await this.meiliClient.index('products').addDocuments([products]);
   }
 
   async deleteProductIndex(id: any) {

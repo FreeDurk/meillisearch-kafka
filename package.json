@@ -20,12 +20,16 @@
     "test:e2e": "jest --config ./apps/meilisearch_kafka/test/jest-e2e.json"
   },
   "dependencies": {
+    "@nestjs/bull": "^11.0.3",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
     "@nestjs/microservices": "^11.1.6",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/typeorm": "^11.0.0",
+    "axios": "^1.11.0",
+    "bull": "^4.16.5",
+    "ioredis": "^5.7.0",
     "kafkajs": "^2.2.4",
     "meilisearch": "^0.51.0",
     "mysql2": "^3.14.3",

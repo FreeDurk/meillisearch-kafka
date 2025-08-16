@@ -10,7 +10,7 @@ export class MeiliIndexingController {
   @MessagePattern('index-product')
   productIndexing(@Payload() product: CreateProductRequest): void {
     Logger.log('Product Indexing...');
-    this.meiliIndexingService.addProduct([product]);
+    this.meiliIndexingService.addProduct(product);
   }
 
   @MessagePattern('index-product-delete')

@@ -36,6 +36,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/meilisearch_kafka/tsconfig.app.json"
       }
+    },
+    "movie": {
+      "type": "application",
+      "root": "apps/movie",
+      "entryFile": "main",
+      "sourceRoot": "apps/movie/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/movie/tsconfig.app.json"
+      }
     }
   }
 }

@@ -13,13 +13,14 @@ export class ApiService {
     @InjectRepository(Product) private productRepo: Repository<Product>,
     @Inject('KAFKA_SERVICE') private readonly kafkaClient: ClientKafka,
     @InjectMeiliSearch() private readonly meiliClient: Meilisearch,
-  ) {}
+  ) { }
 
   async createProduct(data: CreateProductRequest) {
     const result = this.productRepo.create(data);
-    await this.productRepo.save(result);
 
-    this.kafkaClient.emit('index-product', result);
+    const product = await this.productRepo.save(result);
+
+    this.kafkaClient.emit('index-product', product);
   }
 
   async updateProduct(data: CreateProductRequest, id: string) {
@@ -41,12 +42,17 @@ export class ApiService {
   }
 
   async updateProductIndex() {
-    await this.meiliClient.index('products').updateSortableAttributes(['name']);
+    const index = this.meiliClient.index('movies');
+    await index.updateSortableAttributes(['title', 'titleEnglish', 'year', 'rating']);
+    await index.updateFilterableAttributes(['year', 'rating']);
   }
 
-  async searchProduct(query: string) {
-    const results = await this.meiliClient.index('products').search(query, {
-      attributesToHighlight: ['name', 'description'],
+  async searchProduct(query: string, perPage = 20, page = 2) {
+    const offset = (page - 1) * perPage;
+    const results = await this.meiliClient.index('movies').search(query, {
+      limit: perPage,
+      offset: offset,
+      attributesToHighlight: ['title', 'titleEnglish', 'summary'],
       showRankingScore: true,
     });
 
